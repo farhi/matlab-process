@@ -13,7 +13,8 @@ function [PID, command] = get_command(pid)
 command = {}; PID = [];
 
 if isobject(pid)
-  if isjava(pid.Runtime)
+  if isa(pid,'process') pid = pid.Runtime; end
+  if isjava(pid)
     error([ mfilename ': This is/was a Java process.' ]);
   end
 end

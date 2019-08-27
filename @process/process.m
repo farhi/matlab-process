@@ -84,12 +84,14 @@ classdef process < handle
     TimeOut          = [];    % Time [s] after which process is killed if not done.
     Duration         = 0;     % How long it took
     info             = [];    % additional information from the system
+    
+    Runtime          = [];    % Java RunTime object
   end
   
   properties (Access=private)
     
     % Default properties
-    Runtime          = [];    % Java RunTime object
+    
     stdinStream      = '';
     stderrStream     = '';
     stdoutStream     = '';
@@ -194,7 +196,17 @@ classdef process < handle
         start(pid);
       elseif isnumeric(command) && ~isempty(command)
         pid = connect(pid, command);  % external command given as PID
-      else
+      elseif isa(command, 'timer') && isa(get(command,'UserData'),'process')
+        % transfer properties
+        % this is a safe way to instantiate a subclass
+        pid = copyobj(get(command,'UserData'));
+        start(pid);
+      elseif  isa(command, 'process') 
+        % transfer properties
+        % this is a safe way to instantiate a subclass
+        pid = copyobj(command);
+        start(pid);
+      elseif ~isempty(command)
         error([ mfilename ': ERROR: unsupported input argument of class ' class(command) ])
       end
     end
