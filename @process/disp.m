@@ -1,13 +1,5 @@
 function disp(s_in, name)
-  % disp(s) : display Process object (details)
-  %
-  %   @Process/disp function to display Process object details
-  %
-  % input:  s: object or array (Process) 
-  % ex:     'disp(Process)'
-  %
-  % Version: $Date$ $Version$ $Author$
-  % See also Process, Process/refresh
+  % DISP display Process object (details)
 
   if nargin == 2 && ~isempty(name)
     iname = name;

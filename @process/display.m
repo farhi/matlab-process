@@ -1,16 +1,5 @@
 function d = display(s_in, name)
-  % d = display(s) : display Process object (from command line)
-  %
-  % @Process/display function to display Process object.
-  %   Used when no ';' sign follows a Process object in matlab.
-  % The return value may be catched as a string to display.  
-  %
-  % input:  s: object or array (Process) 
-  % output: d: string to display (char)
-  % ex:     'display(Process)' or 'Process'
-  %
-  % Version: $Date$ $Version$ $Author$
-  % See also Process, Process/disp, Process/get
+  % DISPLAY display Process object (from command line)
 
   if nargin == 2 && ~isempty(name)
     iname = name;
@@ -42,30 +31,8 @@ function d = display(s_in, name)
     end
     d = [ d sprintf('     [ID] [Command]                     [State] [output]\n') ];
 
-    % now build the output string
-    for index=1:length(s_in)
-      if length(s_in) > 1, d = [ d sprintf('%5i ', index) ]; end
-      this = get_index(s_in, index);
-      refresh_Process(this);
-      if isjava(this.Runtime)
-        c = char(this.Runtime);
-      else c = num2str(this.Runtime);
-      end
-      if numel(c)>9, c=c((end-8):end); end
-      d = [ d sprintf('%8s ', c) ];
-      if iscellstr(this.command), c=sprintf('%s ', this.command{:});
-      else c = char(this.command); end
-      if numel(c)>30, c=[ c(1:27) '...' ]; end
-      d = [ d sprintf('%30s ', num2str(c)) ];                   % cmd;
-
-      if this.isActive
-        d = [ d 'Run    ' ];
-      else
-        d = [ d 'Stop   ' ];
-      end
-      if ~isempty(this.stderr), d=[ d '[ERR]' ]; end
-      d = [ d sprintf('%s\n', Process_display_out(this.stdout)) ];
-    end
+    % now build the output string using char method
+    d = [ d char(s_in) ];
   end
 
   if nargout == 0

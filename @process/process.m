@@ -84,14 +84,13 @@ classdef process < handle
     TimeOut          = [];    % Time [s] after which process is killed if not done.
     Duration         = 0;     % How long it took
     info             = [];    % additional information from the system
-    
-    Runtime          = [];    % Java RunTime object
+
   end
   
   properties (Access=private)
     
     % Default properties
-    
+    Runtime          = [];    % Java RunTime object
     stdinStream      = '';
     stderrStream     = '';
     stdoutStream     = '';
@@ -186,9 +185,9 @@ classdef process < handle
         pid.creationDate  = now;
         
         % I/O from process
-        pid.stdinStream   = pid.Runtime.getInputStream;
+        pid.stdinStream   = pid.Runtime.getInputStream; % in fact stdout for process
         pid.stderrStream  = pid.Runtime.getErrorStream;
-        pid.stdoutStream  = pid.Runtime.getOutputStream;
+        pid.stdoutStream  = pid.Runtime.getOutputStream;% in fact stdin for process
         
         if pid.Monitor
           disp([ datestr(now) ': process ' pid.Name ' is starting.' ])
@@ -209,11 +208,11 @@ classdef process < handle
       elseif ~isempty(command)
         error([ mfilename ': ERROR: unsupported input argument of class ' class(command) ])
       end
-    end
+    end % process
     
     % --------------------------------------------------------------------------
     function refresh(pid)
-      % process/refresh(pid): poke a process and update its stdout/stderr.
+      % REFRESH poke a process and update its stdout/stderr.
       for index=1:prod(size(pid))
         refresh_Process(get_index(pid,index));
       end
@@ -222,7 +221,7 @@ classdef process < handle
     
     % --------------------------------------------------------------------------
     function ex = exit(pid)
-      % process/exit(pid): end/kill a running process and/or return its exit value.
+      % EXIT end/kill a running process and/or return its exit value.
       ex = [];
       for index=1:prod(size(pid))
         this = get_index(pid, index);
@@ -237,7 +236,7 @@ classdef process < handle
     
     % --------------------------------------------------------------------------
     function delete(pid)
-      % process/delete(pid): completely remove the process from memory. 
+      % DELETE completely remove the process from memory. 
       % The process is killed. Its stdout/err/value are lost.
       
       for index=1:prod(size(pid))
@@ -256,7 +255,7 @@ classdef process < handle
 
     % i/o methods
     function s = read(pid)
-      % process/stdout(pid): return the standard output stream (stdout)
+      % READ return the standard output stream (stdout)
       s = {};
       for index=1:prod(size(pid))
         this = get_index(pid, index);
@@ -268,7 +267,7 @@ classdef process < handle
     end
     
     function s = error(pid)
-      % process/stderr(pid): return the standard error stream (stderr)
+      % ERROR return the standard error stream (stderr)
       s = {};
       for index=1:prod(size(pid))
         this = get_index(pid, index);
@@ -279,8 +278,23 @@ classdef process < handle
       if numel(s) == 1, s=s{1}; end
     end
     
+    function write(pid, message)
+      % WRITE send a string to the standard input stream (stdin)
+      for index=1:prod(size(pid))
+        this = get_index(pid, index);
+        if isvalid(this.timer) && ~isempty(this.stdoutStream) && isjava(this.Runtime)
+          stdin = pid.stdoutStream;
+          % the available write method has signature write(int), so we write 1 by 1
+          for index=1:numel(message)
+            write(stdin, uint16(message(index)));  
+          end
+          flush(stdin);
+        end
+      end
+    end % write
+    
     function s = isreal(pid)
-      % process/isreal(pid): return 1 when the process is running, 0 otherwise.
+      % ISREAL return 1 when the process is running, 0 otherwise.
       s = [];
       for index=1:prod(size(pid))
         this = get_index(pid, index);
@@ -291,7 +305,7 @@ classdef process < handle
     end
     
     function silent(pid)
-      % process/silent(pid): set the process to silent mode.
+      % SILENT set the process to silent mode.
       for index=1:prod(size(pid))
         this = get_index(pid, index);
         if ~isvalid(this.timer), continue; end
@@ -300,7 +314,7 @@ classdef process < handle
     end
     
     function verbose(pid)
-      % process/verbose(pid): set the process to verbose mode, which displays its stdout.
+      % VERBOSE set the process to verbose mode, which displays its stdout.
       for index=1:prod(size(pid))
         this = get_index(pid, index);
         if ~isvalid(this.timer), continue; end
@@ -309,7 +323,7 @@ classdef process < handle
     end
     
     function t=etime(pid)
-      % process/etime(pid): return the process duration since start.
+      % ETIME return the process duration since start.
       t = [];
       for index=1:prod(size(pid))
         this = get_index(pid, index);
@@ -322,6 +336,7 @@ classdef process < handle
     end % etime
     
     function start(pid)
+      % START make sure the process onitoring is running
       for index=1:prod(size(pid))
         this = get_index(pid, index);
         if ~isvalid(this.timer), continue; end
@@ -330,7 +345,7 @@ classdef process < handle
     end % start
     
     function waitfor(pid)
-      % process/waitfor(pid): wait for the process to end normally or on TimeOut.
+      % WAITFOR wait for the process to end normally or on TimeOut.
       %   Pressing Ctrl-C during the wait loop stops waiting, but does not kill the process.
       for index=1:prod(size(pid))
         this = get_index(pid, index);
@@ -343,12 +358,12 @@ classdef process < handle
     end
     
     function kill(obj)
-      % process: kill(pid) : stop a running process
+      % KILL stop a running process
       stop(obj);
     end
     
     function stop(pid, action)
-      % process: stop(pid) : stop a running process
+      % STOP stop a running process
       if nargin < 2, action='kill'; end
       for index=1:prod(size(pid))
         this = get_index(pid, index);
@@ -358,7 +373,7 @@ classdef process < handle
     end
     
     function obj1 = connect(obj0, pid)
-      % process: connect(pid): connect to an existing process.
+      % CONNECT connect to an existing process.
       %
       %  p=connect(process, PID)
       %  p=connect(process, 'name')
@@ -394,7 +409,7 @@ classdef process < handle
     end % connect
     
     function pid = findall(obj)
-      % process: findall(process): find all process objects
+      % FINDALL find all process objects
       if ~isreal(obj), obj = timerfindall; end
       pid = [];
       for index=1:prod(size(obj))
@@ -407,13 +422,13 @@ classdef process < handle
     end % findall
     
     function killall(obj)
-      % process: findall(process): find all process objects
+      % KILLALL find all process objects
       pid = findall(obj);
       stop(pid);
     end % killall
     
     function atexit(obj, fcn)
-      % process: atexit(pid, fcn): sets the Exit callback (executed at stop/kill)
+      % ATEXIT sets the Exit callback (executed at stop/kill)
       if ischar(fcn) || iscell(fcn) || isa(fcn, 'function_handle')
         for index=1:prod(size(obj))
           this = get_index(obj, index);
