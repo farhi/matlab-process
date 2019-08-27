@@ -185,9 +185,9 @@ classdef process < handle
         pid.creationDate  = now;
         
         % I/O from process
-        pid.stdinStream   = pid.Runtime.getInputStream; % in fact stdout for process
-        pid.stderrStream  = pid.Runtime.getErrorStream;
-        pid.stdoutStream  = pid.Runtime.getOutputStream;% in fact stdin for process
+        pid.stdinStream   = pid.Runtime.getInputStream; % type: java.io.InputStream (in fact stdout for process)
+        pid.stderrStream  = pid.Runtime.getErrorStream; % type: java.io.InputStream (stderr)
+        pid.stdoutStream  = pid.Runtime.getOutputStream;% type: java.io.OutputStream (in fact stdin for process)
         
         if pid.Monitor
           disp([ datestr(now) ': process ' pid.Name ' is starting.' ])
@@ -280,15 +280,14 @@ classdef process < handle
     
     function write(pid, message)
       % WRITE send a string to the standard input stream (stdin)
+      if nargin < 2 || ~ischar(message), return; end
       for index=1:prod(size(pid))
         this = get_index(pid, index);
         if isvalid(this.timer) && ~isempty(this.stdoutStream) && isjava(this.Runtime)
-          stdin = pid.stdoutStream;
-          % the available write method has signature write(int), so we write 1 by 1
-          for index=1:numel(message)
-            write(stdin, uint16(message(index)));  
-          end
-          flush(stdin);
+          % we convert our java.io.OutputStream to an ObjectOutputStream to use writeChars
+          w = java.io.ObjectOutputStream(this.stdoutStream);
+          writeChars(w, java.lang.String(message));
+          flush(w);
         end
       end
     end % write
