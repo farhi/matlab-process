@@ -51,12 +51,17 @@ Usage
       ```process(..., 'TimerFcn', @(p,e)~isempty(dir('/path/file')) )```
   - to stop a process when a file disappears, use:
       ```process(..., 'TimerFcn', @(p,e)isempty(dir('/path/file')) )```
+      
+  You can also monitor the process termination with:
+  ```matlab
+  addlistener(pid, 'processEnded', @(src,evt)disp('process just end'))
+  ```
  
   methods to monitor Processes
   - disp(pid)     display full process information.
   - pid           display short process information. Same as display(pid).
-  - stdout(pid)   get the stdout stream from the process (normal output).
-  - stderr(pid)   get the stderr stream from the process (errors).
+  - read(pid)     get the stdout stream from the process (normal output).
+  - error(pid)    get the stderr stream from the process (errors).
   - write(pid, 'string') sends the given string to the process.
   - isreal(pid)   check if a process is valid/running.
   - refresh(pid)  force the pid to be refreshed, i.e check if it is running

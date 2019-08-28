@@ -32,7 +32,7 @@ classdef process < handle
   %       in 'kill','timeout','end', or 'refresh'. 
   %     Example @(p,e)disp([ 'process ' p.Name ': event ' e ])
   %   * the name of a function which takes none to 2 arguments. Same as above.
-  % when a callback has a non-zero return value, it stops the process.
+  % When a callback has a non-zero return value, it stops the process.
   %
   % For instance:
   %   to stop a process when a file appears, use:
@@ -40,19 +40,22 @@ classdef process < handle
   %   to stop a process when a file disappears, use:
   %     process(..., 'TimerFcn', @(p,e)isempty(dir('/path/file')) )
   %
+  % You can also monitor the process termination with:
+  %   addlistener(pid, 'processEnded', @(src,evt)disp('process just end'))
+  %
   % methods to monitor Processes
   %   disp(pid)     display full process information.
   %   pid           display short process information. Same as display(pid).
-  %   stdout(pid)   get the stdout stream from the process (normal output).
-  %   stderr(pid)   get the stderr stream from the process (errors).
-  %   stdin(pid, 'string') sends the given string to the process.
+  %   read(pid)     get the stdout stream from the process (normal output).
+  %   error(pid)    get the stderr stream from the process (errors).
+  %   write(pid, 'string') sends the given string to the process.
   %   isreal(pid)   check if a process is valid/running.
   %   refresh(pid)  force the pid to be refreshed, i.e check if it is running
   %                 and get its stdout/stderr.
   %   silent(pid)   set the process to silent mode (do not print stdout/stderr).
   %   verbose(pid)  set the process to verbose mode (print stdout/stderr).
   %   etime(pid)    return the process duration since start.
-  %   findall(pid)  get all running process objects.
+  %   findall(pid)  get all existing process objects.
   %
   % methods to control execution
   %   waitfor(pid)  wait for the process to end normally or on TimeOut.
@@ -245,7 +248,8 @@ classdef process < handle
           exit(this);
         end
         try
-          delete@timer(this.timer); % remove the timer
+          delete(this.timer); % remove the timer
+          this.timer = [];
         catch ME
           disp(ME.message)
         end
@@ -284,10 +288,9 @@ classdef process < handle
       for index=1:prod(size(pid))
         this = get_index(pid, index);
         if isvalid(this.timer) && ~isempty(this.stdoutStream) && isjava(this.Runtime)
-          % we convert our java.io.OutputStream to an ObjectOutputStream to use writeChars
-          w = java.io.ObjectOutputStream(this.stdoutStream);
-          writeChars(w, java.lang.String(message));
-          flush(w);
+          os = this.stdoutStream; % java.io.OutputStream (from getOutputStream)
+          write(os, uint8(message));
+          flush(os);
         end
       end
     end % write
@@ -340,6 +343,7 @@ classdef process < handle
         this = get_index(pid, index);
         if ~isvalid(this.timer), continue; end
         start(this.timer);
+        notify(this, 'processStarted');
       end
     end % start
     
@@ -409,6 +413,9 @@ classdef process < handle
     
     function pid = findall(obj)
       % FINDALL find all process objects
+      %   FINDALL(process) lists all existing process objects.
+      %   To get those that are alive, use: p=FINDALL(process); isreal(p);
+      
       if ~isreal(obj), obj = timerfindall; end
       pid = [];
       for index=1:prod(size(obj))
@@ -450,11 +457,11 @@ function refresh_fcn(tm, event, string_arg)
     % process has ended by itself or aborted externally
     disp([ datestr(now) ': process ' obj.Name ' has ended.' ])
     feval(@exit_Process, obj, 'end');
-    stop(obj);
-    
+
   elseif ~isempty(obj.TimeOut) && obj.TimeOut > 0 ...
     && etime(clock, datevec(obj.creationDate)) > obj.TimeOut
     feval(@exit_Process,obj, 'timeout');
+    
   end
 
 end

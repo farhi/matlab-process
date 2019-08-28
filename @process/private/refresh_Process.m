@@ -5,7 +5,7 @@ function refresh_Process(pid)
     return
   end
   
-  if ~isvalid(pid.timer), return; end
+  if isempty(pid.timer) || (isa(pid.timer,'timer') && ~isvalid(pid.timer)), return; end
   if isempty(pid.Runtime), return; end
   
   if isjava(pid.Runtime)
@@ -24,8 +24,7 @@ function refresh_Process(pid)
     Callback = pid.TimerFcn;
     istop = exec_Callback(pid, Callback, 'refresh');
   end
-  
-
+  notify(pid, 'processUpdate');
 
 % ------------------------------------------------------------------------------
 function pid = refresh_Process_java(pid)

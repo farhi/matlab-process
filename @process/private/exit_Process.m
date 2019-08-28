@@ -8,7 +8,7 @@ function ex=exit_Process(pid, action)
     return
   end
   
-  if ~isvalid(pid.timer), ex=nan; return; end
+  if isempty(pid.timer) || ~isvalid(pid.timer), ex=nan; return; end
   
   if pid.isActive
     % stop the timer but leaves the object. 
@@ -62,6 +62,7 @@ function ex=exit_Process(pid, action)
     pid.stderr = strcat(pid.stderr, sprintf('\n'), toadd);
   end
   istop = exec_Callback(pid, Callback, action);
+  notify(pid, 'processEnded');
 end
 
 % ------------------------------------------------------------------------------
