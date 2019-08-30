@@ -10,39 +10,40 @@ function ex=exit_Process(pid, action)
   
   if isempty(pid.timer) || ~isvalid(pid.timer), ex=nan; return; end
   
-  if pid.isActive
-    % stop the timer but leaves the object. 
-    if strcmp(get(pid.timer,'Running'),'on'); stop(pid); end 
-  else ex = pid.exitValue; return;
-  end
+  % stop the timer but leaves the object. 
+  if strcmp(get(pid.timer,'Running'),'on'); stop(pid); end 
 
-  if isjava(pid.Runtime)                             % DESTROY / KILL here
-    p=pid.Runtime;
-    p.destroy;
-    pause(1) % wait a little for process to abort
-  else
-    % kill an external PID
-    kill_external(pid.Runtime);  % private below
-  end
-  
-  if isjava(pid.Runtime)
-    try
+  % if the process is still running, kill it.
+  if ~isempty(pid.Runtime) && pid.isActive
+    if isjava(pid.Runtime)                             % DESTROY / KILL here
       p=pid.Runtime;
-      pid.exitValue = p.exitValue;
-    catch
-      % process is invalid (closed)
+      p.destroy;
+      pause(1) % wait a little for process to abort
+    else
+      % kill an external PID
+      kill_external(pid.Runtime);  % private below
+    end
+    
+    if isjava(pid.Runtime)
+      try
+        p=pid.Runtime;
+        pid.exitValue = p.exitValue;
+      catch
+        % process is invalid (closed)
+      end
     end
   end
   ex = pid.exitValue;
   if isempty(pid.terminationDate) || ~pid.terminationDate
     pid.terminationDate=now;
   end
-  pid.isActive  = 0;
-  % compute Duration
-  pid.Duration = etime(clock, datevec(pid.creationDate));
+  if ~pid.isActive, return; end
   
+  pid.isActive  = 0;
   refresh_Process(pid); % flush stdout/stderr
   pid.Runtime = [];
+  % compute Duration
+  pid.Duration = etime(clock, datevec(pid.creationDate));
 
   % when active, we execute the Callback
   if strcmp(action,'kill') || strcmp(action,'timeout')
