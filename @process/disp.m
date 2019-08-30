@@ -18,7 +18,6 @@ function disp(s_in, name)
     else           id=[ '<a href="matlab:doc process">process</a> (<a href="matlab:methods process">methods</a>,<a href="matlab:help process">doc</a>,<a href="matlab:read(' iname ')">stdout</a>,<a href="matlab:exit(' iname ')">exit</a>)' ];
     end
 
-    if ~isvalid(pid.timer), return; end
     if pid.isActive, state='RUNNING'; else state='STOPPED'; end
     fprintf(1,'%s = %s object [%s]:\n',iname, id, state);
 

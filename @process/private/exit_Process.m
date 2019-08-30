@@ -11,7 +11,9 @@ function ex=exit_Process(pid, action)
   if isempty(pid.timer) || ~isvalid(pid.timer), ex=nan; return; end
   
   % stop the timer but leaves the object. 
-  if strcmp(get(pid.timer,'Running'),'on'); stop(pid); end 
+  if ~isempty(pid.timer) && isvalid(pid.timer) && strcmp(get(pid.timer,'Running'),'on'); 
+    stop(pid.timer);
+  end 
 
   % if the process is still running, kill it.
   if ~isempty(pid.Runtime) && pid.isActive
@@ -33,19 +35,23 @@ function ex=exit_Process(pid, action)
       end
     end
   end
-  ex = pid.exitValue;
+  
+  % collect last stdout/stderr
+  if ~isempty(pid.Runtime)
+    refresh_Process(pid); % flush stdout/stderr
+    pid.Runtime = [];
+  end
+  
+  % make sure we have measured the exec time
   if isempty(pid.terminationDate) || ~pid.terminationDate
     pid.terminationDate=now;
+    % compute Duration
+    pid.Duration = etime(clock, datevec(pid.creationDate));
   end
-  if ~pid.isActive, return; end
+  % set return value
+  ex = pid.exitValue;
   
-  pid.isActive  = 0;
-  refresh_Process(pid); % flush stdout/stderr
-  pid.Runtime = [];
-  % compute Duration
-  pid.Duration = etime(clock, datevec(pid.creationDate));
-
-  % when active, we execute the Callback
+  % when active, we execute the Callback (only once)
   if strcmp(action,'kill') || strcmp(action,'timeout')
     Callback = pid.StopFcn;
   elseif strcmp(action,'end')
@@ -56,12 +62,14 @@ function ex=exit_Process(pid, action)
   if strcmp(action,'timeout')
     toadd = [ datestr(now) ': Process ' pid.Name ' has reached its TimeOut ' num2str(pid.TimeOut) ' [s]' ];
     disp(toadd);
-    pid.stderr = strcat(pid.stderr, sprintf('\n'), toadd);
+    pid.stderr = strcat(pid.stderr, sprintf('\n'), toadd, sprintf('\n'));
   elseif strcmp(action,'kill')
     toadd = [ datestr(now) ': Process ' pid.Name ' is requested to stop.' ];
     disp(toadd);
-    pid.stderr = strcat(pid.stderr, sprintf('\n'), toadd);
+    pid.stderr = strcat(pid.stderr, sprintf('\n'), toadd, sprintf('\n'));
   end
+
+  pid.isActive = 0;
   istop = exec_Callback(pid, Callback, action);
   notify(pid, 'processEnded');
 end

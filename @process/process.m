@@ -231,7 +231,6 @@ classdef process < handle
         if isvalid(this.timer) && any(strcmp(get(this.timer,'Running'),'on'))
           refresh_Process(this);
         end
-        stop(this);
         ex(end+1) = exit_Process(this, 'kill');
       end
       
@@ -244,9 +243,7 @@ classdef process < handle
       
       for index=1:prod(size(pid))
         this = get_index(pid, index);
-        if isvalid(this.timer) && strcmp(get(this.timer,'Running'),'on')
-          exit(this);
-        end
+        exit(this);
         try
           delete(this.timer); % remove the timer
           this.timer = [];
