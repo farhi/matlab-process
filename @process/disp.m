@@ -41,14 +41,14 @@ function disp(s_in, name)
     if isdeployed || ~usejava('jvm') || ~usejava('desktop')
       fprintf(1, '             stdout: [%s char]\n', num2str(numel(stdout)));
     else
-      fprintf(1, ['             <a href="matlab:stdout(' iname ')">stdout</a>: [%s char]\n'], num2str(numel(stdout)));
+      fprintf(1, ['             <a href="matlab:read(' iname ')">stdout</a>: [%s char]\n'], num2str(numel(stdout)));
     end
     if numel(stdout), fprintf(1, '%s\n', Process_disp_out(stdout)); end
     if numel(stderr)
       if isdeployed || ~usejava('jvm') || ~usejava('desktop')
         fprintf(1, '             stderr: [%s char]\n', num2str(numel(stderr)));
       else
-        fprintf(1,[ '             <a href="matlab:stderr(' iname ')">stderr</a>: [%s char]\n'], num2str(numel(stderr)));
+        fprintf(1,[ '             <a href="matlab:error(' iname ')">stderr</a>: [%s char]\n'], num2str(numel(stderr)));
       end
       fprintf(1, '%s\n', Process_disp_out(stderr)); 
     end
