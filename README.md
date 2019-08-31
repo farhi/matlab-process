@@ -77,6 +77,7 @@ Usage
   - delete(pid)   kill the process and delete it from memory.
   - killall(pid)  kill all running process objects.
   - atexit(pid, fcn) set a callback to execute at end/stop/kill.
+  - period(pid, dt) set the monitoring period (defaut is 10s)
  
   Example:
   ```matlab

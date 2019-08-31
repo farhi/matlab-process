@@ -63,6 +63,7 @@ classdef process < handle
   %   delete(pid)   kill the process and delete it from memory.
   %   killall(pid)  kill all running process objects.
   %   atexit(pid, fcn) set a callback to execute at end/stop/kill.
+  %   period(pid, dt) set the monitoring period (defaut is 10s)
   %
   % Example:
   %   pid=process('ping 127.0.0.1'); silent(pid);
@@ -334,6 +335,20 @@ classdef process < handle
       end
     end % etime
     
+    function dt = period(pid, dt)
+      % PERIOD get or set the process monitoring period.
+      %   PERIOD(pid) returns the current monitoring period. Default is 10 s.
+      %
+      %   PERIOD(pid, dt) sets the monitoring period [s].
+      if nargin == 1 && isa(pid.timer, 'timer')
+        dt = get(pid.timer,'Period');
+      elseif isnumeric(dt) && isscalar(dt) && dt > 0
+        stop(pid.timer);
+        set(pid.timer,'Period',dt);
+        start(pid.timer);
+      end
+    end % period
+    
     function start(pid)
       % START make sure the process onitoring is running
       for index=1:prod(size(pid))
@@ -363,7 +378,7 @@ classdef process < handle
     end
     
     function stop(pid, action)
-      % STOP stop a running process
+      % STOP stop a running process (kill)
       if nargin < 2, action='kill'; end
       for index=1:prod(size(pid))
         this = get_index(pid, index);

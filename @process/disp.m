@@ -22,9 +22,11 @@ function disp(s_in, name)
     fprintf(1,'%s = %s object [%s]:\n',iname, id, state);
 
     s.Command      = num2str(pid.command);
-    s.creationDate = pid.creationDate;
-    s.terminationDate = pid.terminationDate;
-    s.exitValue    = pid.exitValue;
+    for f={'creationDate','terminationDate','exitValue','Duration','UserData', ...
+      'info','StopFcn', 'EndFcn', 'TimerFcn', 'TimeOut'}
+      s.(f{1}) = pid.(f{1});
+    end
+    s.period = period(pid);
     stdout = pid.stdout;
     stderr = pid.stderr;
     
