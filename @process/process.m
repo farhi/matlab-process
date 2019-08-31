@@ -17,6 +17,9 @@ classdef process < handle
   %
   %   pid = connect(process, 'ping');
   %
+  % but you will then not be able to capture the stdout and stderr messages, nor 
+  % send messages via 'write'.
+  %
   % You can customize the process with e.g. additional arguments such as:
   %   process(..., 'TimeOut', value)  set a TimeOut (to kill process after)
   %   process(..., 'Period', value)   set the refresh rate in seconds (10 s).
@@ -64,7 +67,7 @@ classdef process < handle
   %   delete(pid)   kill the process and delete it from memory.
   %   killall(pid)  kill all running process objects.
   %   atexit(pid, fcn) set a callback to execute at end/stop/kill.
-  %   period(pid, dt) set the monitoring period (defaut is 10s)
+  %   period(pid, dt) set the monitoring period (default is 10s)
   %
   % Example:
   %   pid=process('ping 127.0.0.1'); silent(pid);
@@ -84,7 +87,7 @@ classdef process < handle
     creationDate     = now;   % Creation date (start).
     StopFcn          = '';    % Executed when process is stopped/killed.
     EndFcn           = '';    % Executed when process ends normally.
-    TimerFcn         = '';    % Executed everytime the refresh function is used.
+    TimerFcn         = '';    % Executed every time the refresh function is used.
     UserData         = [];    % User area.
     TimeOut          = [];    % Time [s] after which process is killed if not done.
     Duration         = 0;     % How long it took

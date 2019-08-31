@@ -28,6 +28,8 @@ Usage
   ```matlab
     pid = connect(process, 'ping');
   ```
+  but you will then not be able to capture the stdout and stderr messages, nor 
+  send messages via 'write'.
   
   You can customize the process with e.g. additional arguments such as:
   - process(..., 'TimeOut', value)  set a TimeOut (to kill process after)
@@ -39,12 +41,12 @@ Usage
   - process(..., 'reader', 'fast')  use a fast reader for stdout/stderr, but less robust (may block, see below)
  
   The TimerFcn, StopFcn and EndFcn can be given as:
-    - simple strings, such as ```'disp(''OK'')'```
-    - a function handle with none to 2 arguments. The Callback will then 
-      pass as 1st argument the process object, and as 2nd the event
-        in 'kill','timeout','end', or 'refresh'. 
-      Example ```@(p,e)disp([ 'process ' p.Name ': event ' e ])```
-    - the name of a function which takes none to 2 arguments. Same as above.
+  - simple strings, such as ```'disp(''OK'')'```
+  - a function handle with none to 2 arguments. The Callback will then 
+    pass as 1st argument the process object, and as 2nd the event
+      in 'kill','timeout','end', or 'refresh'. 
+    Example ```@(p,e)disp([ 'process ' p.Name ': event ' e ])```
+  - the name of a function which takes none to 2 arguments. Same as above.
     
   When a callback has a non-zero return value, it stops the process.
  
@@ -79,7 +81,7 @@ Usage
   - delete(pid)   kill the process and delete it from memory.
   - killall(pid)  kill all running process objects.
   - atexit(pid, fcn) set a callback to execute at end/stop/kill.
-  - period(pid, dt) set the monitoring period (defaut is 10s)
+  - period(pid, dt) set the monitoring period (default is 10s)
  
   Example:
   ```matlab
@@ -119,7 +121,7 @@ Property Summary
 - Name            The name of the process 
 - StopFcn         Executed when process is stopped/killed. 
 - TimeOut         Time [s] after which process is killed if not done. 
-- TimerFcn        Executed everytime the refresh function is used. 
+- TimerFcn        Executed every time the refresh function is used. 
 - UserData        User area. 
 - command         The command associated to the process. 
 - creationDate    Creation date (start). 
