@@ -2,7 +2,7 @@
 A Matlab class to control external processes asynchronously. 
 Version 19.08. E. Farhi, GPL2.
 
-It can be used to control a process launched from Matlab, or to monitor an other process launched independently. When the process is lauched from matlab, its standard output, and error are collected.
+It can be used to control a process launched from Matlab, or to monitor an other process launched independently. When the process is launched from Matlab, its standard output, and error are collected.
  
 Usage
 =====
@@ -104,7 +104,7 @@ and error messages, you may try the fast reader when launching the process, with
   pid = process('command arguments ...','reader','fast')
 ```
 
-However, this fast reader is less robust, and may potentially block Matlab when 
+This fast reader is less robust, and may potentially block Matlab when 
 the output messages are not properly terminated with end-of-lines.
 We recommand to test the applicability of this reader, and check that the process
 to monitor is compatible.
@@ -121,7 +121,8 @@ Property Summary
 - TimeOut         Time [s] after which process is killed if not done. 
 - TimerFcn        Executed everytime the refresh function is used. 
 - UserData        User area. 
-- command         The command associated to the process. creationDateCreation date (start). 
+- command         The command associated to the process. 
+- creationDate    Creation date (start). 
 - exitValue       Exit code, only valid at end of process. 
 - info            additional information from the system 
 - stderr          Stores the stderr from the process. 
@@ -155,10 +156,11 @@ Method Summary
 -  lt< (LT)    Less than relation for handles.   
 -  ne~= (NE)   Not equal relation for handles.   
 -  notify      Notify listeners of event.   
+-  period      set/get the monitoring period.
 -  read        return the standard output stream (stdout)   
 -  refresh     poke a process and update its stdout/stderr.   
 -  silent      set the process to silent mode.   
--  start       make sure the process onitoring is running   
+-  start       make sure the process monitoring is running   
 -  stop        stop a running process   
 -  verbose     set the process to verbose mode, which displays its stdout.   
 -  waitfor     wait for the process to end normally or on TimeOut.   

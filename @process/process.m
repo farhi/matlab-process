@@ -369,7 +369,7 @@ classdef process < handle
     end % period
     
     function start(pid)
-      % START make sure the process onitoring is running
+      % START make sure the process monitoring is running
       for index=1:prod(size(pid))
         this = get_index(pid, index);
         if ~isvalid(this), continue; end
