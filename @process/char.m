@@ -2,6 +2,7 @@ function d=char(pid)
   % CHAR convert a process object into char string
   d = [];
   for index=1:length(pid)
+    if ~isvalid(pid(index)), continue; end
     if length(pid) > 1, d = [ d sprintf('%5i ', index) ]; end
     this = get_index(pid, index);
     refresh_Process(this);

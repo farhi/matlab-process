@@ -8,7 +8,7 @@ function ex=exit_Process(pid, action)
     return
   end
   
-  if isempty(pid.timer) || ~isvalid(pid.timer), ex=nan; return; end
+  if ~isvalid(pid) || isempty(pid.timer) || ~isvalid(pid.timer), ex=nan; return; end
   
   % stop the timer but leaves the object. 
   if ~isempty(pid.timer) && isvalid(pid.timer) && strcmp(get(pid.timer,'Running'),'on'); 
@@ -65,7 +65,7 @@ function ex=exit_Process(pid, action)
     pid.stderr = strcat(pid.stderr, sprintf('\n'), toadd, sprintf('\n'));
   elseif strcmp(action,'kill')
     toadd = [ datestr(now) ': Process ' pid.Name ' is requested to stop.' ];
-    disp(toadd);
+    if pid.isActive, disp(toadd); end
     pid.stderr = strcat(pid.stderr, sprintf('\n'), toadd, sprintf('\n'));
   end
 

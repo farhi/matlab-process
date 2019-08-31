@@ -1,5 +1,6 @@
 # matlab-process
 A Matlab class to control external processes asynchronously. 
+Version 19.08. E. Farhi, GPL2.
 
 It can be used to control a process launched from Matlab, or to monitor an other process launched independently. When the process is lauched from matlab, its standard output, and error are collected.
  
@@ -35,6 +36,7 @@ Usage
   - process(..., 'TimerFcn', @fcn)  execute periodically on refresh
   - process(..., 'StopFcn', @fcn)   execute when the process is killed (stop/exit)
   - process(..., 'EndFcn', @fcn)    execute when the process ends by itself
+  - process(..., 'reader', 'fast')  use a fast reader for stdout/stderr, but less robust (may block, see below)
  
   The TimerFcn, StopFcn and EndFcn can be given as:
     - simple strings, such as ```'disp(''OK'')'```
@@ -86,9 +88,26 @@ Usage
     exit(pid);
   ```
   
-    Copyright: Licensed under the GPL2
-               E. Farhi, <emmanuel.farhi@synchrotron-soleil.fr>, http://ifit.mccode.org
+    Copyright: Licensed under the GPL2. 
+    E. Farhi, <emmanuel.farhi@synchrotron-soleil.fr>, http://ifit.mccode.org
 
+Specifying the process reader / Interactive processes
+=====================================================
+
+The default stdout/stderr reader is rather slow, but very robust. It is well adapted
+to most cases, including interactive processes (allowing to use the `write` method).
+However, it is __slow__.
+
+When the external process is **not** interactive, and produces large amount of output
+and error messages, you may try the fast reader when launching the process, with:
+```matlab
+  pid = process('command arguments ...','reader','fast')
+```
+
+However, this fast reader is less robust, and may potentially block Matlab when 
+the output messages are not properly terminated with end-of-lines.
+We recommand to test the applicability of this reader, and check that the process
+to monitor is compatible.
 
 Class Details
 =============
