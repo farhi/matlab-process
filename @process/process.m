@@ -239,27 +239,22 @@ classdef process < handle
     % --------------------------------------------------------------------------
     function ex = exit(pid)
       % EXIT end/kill a running process and/or return its exit value.
-      ex = [];
-      for index=1:prod(size(pid))
-        this = get_index(pid, index);
-        if ~isvalid(this), continue; end
-        if isvalid(this.timer) && any(strcmp(get(this.timer,'Running'),'on'))
-          refresh_Process(this);
-        end
-        ex(end+1) = exit_Process(this, 'kill');
-      end
-      
+      ex = stop(pid);
+    end
+    
+    function ex = kill(obj)
+      % KILL stop a running process
+      ex = stop(obj);
     end
     
     % --------------------------------------------------------------------------
-    function delete(pid)
+    function ex = delete(pid)
       % DELETE completely remove the process from memory. 
       % The process is killed. Its stdout/err/value are lost.
-      
+      ex = stop(pid);
       for index=1:prod(size(pid))
         this = get_index(pid, index);
         if ~isvalid(this), continue; end
-        exit(this);
         try
           delete(this.timer); % remove the timer
           this.timer = [];
@@ -268,6 +263,18 @@ classdef process < handle
         end
       end
 
+    end
+    
+    function ex=stop(pid, action)
+      % STOP stop a running process (kill)
+      if nargin < 2, action='kill'; end
+      for index=1:prod(size(pid))
+        this = get_index(pid, index);
+        if ~isvalid(this), continue; end
+        stop(this.timer);
+        feval(@exit_Process, this, action);        
+      end
+      ex = [ pid.exitValue ];
     end
 
     % i/o methods
@@ -393,22 +400,6 @@ classdef process < handle
         while isreal(this)
           pause(period);
         end
-      end
-    end
-    
-    function kill(obj)
-      % KILL stop a running process
-      stop(obj);
-    end
-    
-    function stop(pid, action)
-      % STOP stop a running process (kill)
-      if nargin < 2, action='kill'; end
-      for index=1:prod(size(pid))
-        this = get_index(pid, index);
-        if ~isvalid(this), continue; end
-        stop(this.timer);
-        feval(@exit_Process, this, action);
       end
     end
     
