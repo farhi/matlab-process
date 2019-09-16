@@ -6,7 +6,7 @@ classdef process < handle
   % The process class replaces the 'system' command. but is started asynchronously.
   % Matlab does not wait for the end of the process to get back to interactive mode.
   % The stdout and stderr are collected periodically. You can send messages 
-  % via the stdin channel (for interactive processes).
+  % via the stdin channel (for interactive processes - see below).
   %
   % You can as well monitor an existing external process by connecting to its PID (number)
   % 
@@ -17,6 +17,9 @@ classdef process < handle
   %
   %   pid = connect(process, 'ping');
   %
+  % but you will then not be able to capture the stdout and stderr messages, nor 
+  % send messages via 'write'.
+  %
   % You can customize the process with e.g. additional arguments such as:
   %   process(..., 'TimeOut', value)  set a TimeOut (to kill process after)
   %   process(..., 'Period', value)   set the refresh rate in seconds (10 s).
@@ -24,6 +27,7 @@ classdef process < handle
   %   process(..., 'TimerFcn', @fcn)  execute periodically on refresh
   %   process(..., 'StopFcn', @fcn)   execute when the process is killed (stop/exit)
   %   process(..., 'EndFcn', @fcn)    execute when the process ends by itself
+  %   process(..., 'reader', 'fast')  use a fast reader for stdout/stderr, but less robust (may block)
   %
   % The TimerFcn, StopFcn and EndFcn can be given as:
   %   * simple strings, such as 'disp(''OK'')'
@@ -42,6 +46,7 @@ classdef process < handle
   %
   % You can also monitor the process termination with:
   %   addlistener(pid, 'processEnded', @(src,evt)disp('process just end'))
+  % Known events are: processStarted, processEnded, processUpdate.
   %
   % methods to monitor Processes
   %   disp(pid)     display full process information.
@@ -63,6 +68,7 @@ classdef process < handle
   %   delete(pid)   kill the process and delete it from memory.
   %   killall(pid)  kill all running process objects.
   %   atexit(pid, fcn) set a callback to execute at end/stop/kill.
+  %   period(pid, dt) set the monitoring period (default is 10s)
   %
   % Example:
   %   pid=process('ping 127.0.0.1'); silent(pid);
@@ -82,7 +88,7 @@ classdef process < handle
     creationDate     = now;   % Creation date (start).
     StopFcn          = '';    % Executed when process is stopped/killed.
     EndFcn           = '';    % Executed when process ends normally.
-    TimerFcn         = '';    % Executed everytime the refresh function is used.
+    TimerFcn         = '';    % Executed every time the refresh function is used.
     UserData         = [];    % User area.
     TimeOut          = [];    % Time [s] after which process is killed if not done.
     Duration         = 0;     % How long it took
@@ -101,6 +107,7 @@ classdef process < handle
     isActive         = 0;
     Monitor          = 1;
     PID              = [];   % for external processes (non Java)
+    interactive      = true;
 
   end % properties
   
@@ -170,6 +177,13 @@ classdef process < handle
             if ~isempty(val) && val>0, pid.TimeOut = val; end
           case {'name','tag'}
             if ~isempty(val) pid.Name = val; end
+          case {'interactive','write','stdin','reader'}
+            if ~isempty(val)
+              if ischar(val)
+                if strcmp(val, 'fast') val = false; else val = true; end
+              end
+              if val, pid.interactive = true; end
+            end
           end
         end
         index = index+1;
@@ -217,6 +231,7 @@ classdef process < handle
     function refresh(pid)
       % REFRESH poke a process and update its stdout/stderr.
       for index=1:prod(size(pid))
+        if ~isvalid(pid(index)), continue; end
         refresh_Process(get_index(pid,index));
       end
 
@@ -225,25 +240,22 @@ classdef process < handle
     % --------------------------------------------------------------------------
     function ex = exit(pid)
       % EXIT end/kill a running process and/or return its exit value.
-      ex = [];
-      for index=1:prod(size(pid))
-        this = get_index(pid, index);
-        if isvalid(this.timer) && any(strcmp(get(this.timer,'Running'),'on'))
-          refresh_Process(this);
-        end
-        ex(end+1) = exit_Process(this, 'kill');
-      end
-      
+      ex = stop(pid);
+    end
+    
+    function ex = kill(obj)
+      % KILL stop a running process
+      ex = stop(obj);
     end
     
     % --------------------------------------------------------------------------
-    function delete(pid)
+    function ex = delete(pid)
       % DELETE completely remove the process from memory. 
       % The process is killed. Its stdout/err/value are lost.
-      
+      ex = stop(pid);
       for index=1:prod(size(pid))
         this = get_index(pid, index);
-        exit(this);
+        if ~isvalid(this), continue; end
         try
           delete(this.timer); % remove the timer
           this.timer = [];
@@ -253,6 +265,18 @@ classdef process < handle
       end
 
     end
+    
+    function ex=stop(pid, action)
+      % STOP stop a running process (kill)
+      if nargin < 2, action='kill'; end
+      for index=1:prod(size(pid))
+        this = get_index(pid, index);
+        if ~isvalid(this), continue; end
+        stop(this.timer);
+        feval(@exit_Process, this, action);        
+      end
+      ex = [ pid.exitValue ];
+    end
 
     % i/o methods
     function s = read(pid)
@@ -260,6 +284,7 @@ classdef process < handle
       s = {};
       for index=1:prod(size(pid))
         this = get_index(pid, index);
+        if ~isvalid(this), continue; end
         if ~isvalid(this.timer), s{end+1}=nan; continue; end
         refresh(this);
         s{end+1} = this.stdout;
@@ -272,6 +297,7 @@ classdef process < handle
       s = {};
       for index=1:prod(size(pid))
         this = get_index(pid, index);
+        if ~isvalid(this), continue; end
         if ~isvalid(this.timer), s{end+1}=nan; continue; end
         refresh(this);
         s{end+1} = this.stderr;
@@ -284,6 +310,7 @@ classdef process < handle
       if nargin < 2 || ~ischar(message), return; end
       for index=1:prod(size(pid))
         this = get_index(pid, index);
+        if ~isvalid(this), continue; end
         if isvalid(this.timer) && ~isempty(this.stdoutStream) && isjava(this.Runtime)
           os = this.stdoutStream; % java.io.OutputStream (from getOutputStream)
           write(os, uint8(message));
@@ -297,7 +324,7 @@ classdef process < handle
       s = [];
       for index=1:prod(size(pid))
         this = get_index(pid, index);
-        if ~isvalid(this.timer), s(end+1)=0; continue; end
+        if ~isvalid(this) || ~isvalid(this.timer), s(end+1)=0; continue; end
         refresh(this);
         s(end+1) = this.isActive;
       end
@@ -307,6 +334,7 @@ classdef process < handle
       % SILENT set the process to silent mode.
       for index=1:prod(size(pid))
         this = get_index(pid, index);
+        if ~isvalid(this), continue; end
         if ~isvalid(this.timer), continue; end
         this.Monitor = 0;
       end
@@ -316,6 +344,7 @@ classdef process < handle
       % VERBOSE set the process to verbose mode, which displays its stdout.
       for index=1:prod(size(pid))
         this = get_index(pid, index);
+        if ~isvalid(this), continue; end
         if ~isvalid(this.timer), continue; end
         this.Monitor = 1;
       end
@@ -326,6 +355,7 @@ classdef process < handle
       t = [];
       for index=1:prod(size(pid))
         this = get_index(pid, index);
+        if ~isvalid(this), continue; end
         if isreal(this)
           t(index)=etime(clock, datevec(this.creationDate));
         else
@@ -334,10 +364,26 @@ classdef process < handle
       end
     end % etime
     
+    function dt = period(pid, dt)
+      % PERIOD get or set the process monitoring period.
+      %   PERIOD(pid) returns the current monitoring period. Default is 10 s.
+      %
+      %   PERIOD(pid, dt) sets the monitoring period [s].
+      if ~isvalid(pid), dt=nan; return; end
+      if nargin == 1 && isa(pid.timer, 'timer')
+        dt = get(pid.timer,'Period');
+      elseif isnumeric(dt) && isscalar(dt) && dt > 0
+        stop(pid.timer);
+        set(pid.timer,'Period',dt);
+        start(pid.timer);
+      end
+    end % period
+    
     function start(pid)
-      % START make sure the process onitoring is running
+      % START make sure the process monitoring is running
       for index=1:prod(size(pid))
         this = get_index(pid, index);
+        if ~isvalid(this), continue; end
         if ~isvalid(this.timer), continue; end
         start(this.timer);
         notify(this, 'processStarted');
@@ -349,26 +395,12 @@ classdef process < handle
       %   Pressing Ctrl-C during the wait loop stops waiting, but does not kill the process.
       for index=1:prod(size(pid))
         this = get_index(pid, index);
+        if ~isvalid(this), continue; end
         if ~isvalid(this.timer), continue; end
         period = get(this.timer, 'Period');
         while isreal(this)
           pause(period);
         end
-      end
-    end
-    
-    function kill(obj)
-      % KILL stop a running process
-      stop(obj);
-    end
-    
-    function stop(pid, action)
-      % STOP stop a running process
-      if nargin < 2, action='kill'; end
-      for index=1:prod(size(pid))
-        this = get_index(pid, index);
-        stop(this.timer);
-        feval(@exit_Process, this, action);
       end
     end
     
@@ -417,6 +449,7 @@ classdef process < handle
       pid = [];
       for index=1:prod(size(obj))
         this = obj(index);
+        if ~isvalid(this), continue; end
         p = get(this, 'UserData');
         if isa(p, 'process') % this is a timer attached to a process
           pid = [ pid p ];
@@ -435,6 +468,7 @@ classdef process < handle
       if ischar(fcn) || iscell(fcn) || isa(fcn, 'function_handle')
         for index=1:prod(size(obj))
           this = get_index(obj, index);
+          if ~isvalid(this), continue; end
           this.StopFcn = fcn; % when killed
           this.EndFcn  = fcn; % when ends normally
         end
