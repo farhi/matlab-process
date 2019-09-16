@@ -1,7 +1,8 @@
 # matlab-process
 A Matlab class to control external processes asynchronously. 
+Version 19.08. E. Farhi, GPL2.
 
-It can be used to control a process launched from Matlab, or to monitor an other process launched independently. When the process is lauched from matlab, its standard output, and error are collected.
+It can be used to control a process launched from Matlab, or to monitor an other process launched independently. When the process is launched from Matlab, its standard output, and error are collected.
  
 Usage
 =====
@@ -27,6 +28,8 @@ Usage
   ```matlab
     pid = connect(process, 'ping');
   ```
+  but you will then not be able to capture the stdout and stderr messages, nor 
+  send messages via 'write'.
   
   You can customize the process with e.g. additional arguments such as:
   - process(..., 'TimeOut', value)  set a TimeOut (to kill process after)
@@ -35,14 +38,15 @@ Usage
   - process(..., 'TimerFcn', @fcn)  execute periodically on refresh
   - process(..., 'StopFcn', @fcn)   execute when the process is killed (stop/exit)
   - process(..., 'EndFcn', @fcn)    execute when the process ends by itself
+  - process(..., 'reader', 'fast')  use a fast reader for stdout/stderr, but less robust (may block, see below)
  
   The TimerFcn, StopFcn and EndFcn can be given as:
-    - simple strings, such as ```'disp(''OK'')'```
-    - a function handle with none to 2 arguments. The Callback will then 
-      pass as 1st argument the process object, and as 2nd the event
-        in 'kill','timeout','end', or 'refresh'. 
-      Example ```@(p,e)disp([ 'process ' p.Name ': event ' e ])```
-    - the name of a function which takes none to 2 arguments. Same as above.
+  - simple strings, such as ```'disp(''OK'')'```
+  - a function handle with none to 2 arguments. The Callback will then 
+    pass as 1st argument the process object, and as 2nd the event
+      in 'kill','timeout','end', or 'refresh'. 
+    Example ```@(p,e)disp([ 'process ' p.Name ': event ' e ])```
+  - the name of a function which takes none to 2 arguments. Same as above.
     
   When a callback has a non-zero return value, it stops the process.
  
@@ -78,6 +82,7 @@ Usage
   - delete(pid)   kill the process and delete it from memory.
   - killall(pid)  kill all running process objects.
   - atexit(pid, fcn) set a callback to execute at end/stop/kill.
+  - period(pid, dt) set the monitoring period (default is 10s)
  
   Example:
   ```matlab
@@ -86,9 +91,26 @@ Usage
     exit(pid);
   ```
   
-    Copyright: Licensed under the GPL2
-               E. Farhi, <emmanuel.farhi@synchrotron-soleil.fr>, http://ifit.mccode.org
+    Copyright: Licensed under the GPL2. 
+    E. Farhi, <emmanuel.farhi@synchrotron-soleil.fr>, http://ifit.mccode.org
 
+Specifying the process reader / Interactive processes
+=====================================================
+
+The default stdout/stderr reader is rather slow, but very robust. It is well adapted
+to most cases, including interactive processes (allowing to use the `write` method).
+However, it is __slow__.
+
+When the external process is **not** interactive, and produces large amount of output
+and error messages, you may try the fast reader when launching the process, with:
+```matlab
+  pid = process('command arguments ...','reader','fast')
+```
+
+This fast reader is less robust, and may potentially block Matlab when 
+the output messages are not properly terminated with end-of-lines.
+We recommand to test the applicability of this reader, and check that the process
+to monitor is compatible.
 
 Class Details
 =============
@@ -100,9 +122,10 @@ Property Summary
 - Name            The name of the process 
 - StopFcn         Executed when process is stopped/killed. 
 - TimeOut         Time [s] after which process is killed if not done. 
-- TimerFcn        Executed everytime the refresh function is used. 
+- TimerFcn        Executed every time the refresh function is used. 
 - UserData        User area. 
-- command         The command associated to the process. creationDateCreation date (start). 
+- command         The command associated to the process. 
+- creationDate    Creation date (start). 
 - exitValue       Exit code, only valid at end of process. 
 - info            additional information from the system 
 - stderr          Stores the stderr from the process. 
@@ -136,10 +159,11 @@ Method Summary
 -  lt< (LT)    Less than relation for handles.   
 -  ne~= (NE)   Not equal relation for handles.   
 -  notify      Notify listeners of event.   
+-  period      set/get the monitoring period.
 -  read        return the standard output stream (stdout)   
 -  refresh     poke a process and update its stdout/stderr.   
 -  silent      set the process to silent mode.   
--  start       make sure the process onitoring is running   
+-  start       make sure the process monitoring is running   
 -  stop        stop a running process   
 -  verbose     set the process to verbose mode, which displays its stdout.   
 -  waitfor     wait for the process to end normally or on TimeOut.   

@@ -5,7 +5,7 @@ function refresh_Process(pid)
     return
   end
   
-  if isempty(pid.timer) || (isa(pid.timer,'timer') && ~isvalid(pid.timer)), return; end
+  if ~isvalid(pid) || isempty(pid.timer) || (isa(pid.timer,'timer') && ~isvalid(pid.timer)), return; end
   if isempty(pid.Runtime), return; end
   
   if isjava(pid.Runtime)
@@ -46,11 +46,12 @@ function pid = refresh_Process_java(pid)
   
   % then retrieve any stdout/stderr content (possibly in Buffer after end of process)
   if isjava(pid.stdinStream)
-    toadd = process_get_output(pid.stdinStream);
+    if pid.interactive, method = 'slow'; else method = 'fast'; end
+    toadd = process_get_output(pid.stdinStream, method);
     pid.stdout = sprintf('%s%s', pid.stdout, toadd);
     if pid.Monitor && ~isempty(toadd), disp([ pid.Name ': ' toadd ]); end
     
-    toadd = process_get_output(pid.stderrStream);
+    toadd = process_get_output(pid.stderrStream, method);
     pid.stderr = sprintf('%s%s', pid.stderr, toadd);
     if pid.Monitor && ~isempty(toadd), disp([ pid.Name ': ' toadd ]); end
     

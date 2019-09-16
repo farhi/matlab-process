@@ -8,15 +8,16 @@ function ex=exit_Process(pid, action)
     return
   end
   
-  if isempty(pid.timer) || ~isvalid(pid.timer), ex=nan; return; end
+  if ~isvalid(pid) || isempty(pid.timer) || ~isvalid(pid.timer), ex=nan; return; end
   
   % stop the timer but leaves the object. 
   if ~isempty(pid.timer) && isvalid(pid.timer) && strcmp(get(pid.timer,'Running'),'on'); 
     stop(pid.timer);
   end 
-
+  
   % if the process is still running, kill it.
-  if ~isempty(pid.Runtime) && pid.isActive
+  isActive = pid.isActive;
+  if ~isempty(pid.Runtime) && isActive
     if isjava(pid.Runtime)                             % DESTROY / KILL here
       p=pid.Runtime;
       p.destroy;
@@ -37,9 +38,9 @@ function ex=exit_Process(pid, action)
   end
   
   % collect last stdout/stderr
-  if ~isempty(pid.Runtime)
-    refresh_Process(pid); % flush stdout/stderr
-    pid.Runtime = [];
+  if ~isempty(pid.Runtime) && isActive
+    refresh_Process(pid); % flush stdout/stderr, usually also sets isActive=0
+    % pid.Runtime = [];
   end
   
   % make sure we have measured the exec time
@@ -65,7 +66,7 @@ function ex=exit_Process(pid, action)
     pid.stderr = strcat(pid.stderr, sprintf('\n'), toadd, sprintf('\n'));
   elseif strcmp(action,'kill')
     toadd = [ datestr(now) ': Process ' pid.Name ' is requested to stop.' ];
-    disp(toadd);
+    if isActive, disp(toadd); end
     pid.stderr = strcat(pid.stderr, sprintf('\n'), toadd, sprintf('\n'));
   end
 

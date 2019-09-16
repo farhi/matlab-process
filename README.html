@@ -1,0 +1,771 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+  </head>
+  <body>
+    <meta http-equiv="content-type" content="text/html;
+      charset=windows-1252">
+    <h1 style="box-sizing: border-box; font-size: 2em; margin-top: 0px
+      !important; margin-right: 0px; margin-bottom: 16px; margin-left:
+      0px; font-weight: 600; line-height: 1.25; border-bottom: 1px solid
+      rgb(234, 236, 239); padding-bottom: 0.3em; color: rgb(36, 41, 46);
+      font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe
+      UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color
+      Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; letter-spacing: normal; orphans: 2;
+      text-align: start; text-indent: 0px; text-transform: none;
+      white-space: normal; widows: 2; word-spacing: 0px;
+      -webkit-text-stroke-width: 0px; background-color: rgb(255, 255,
+      255); text-decoration-style: initial; text-decoration-color:
+      initial;">matlab-process</h1>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">A Matlab class to
+      control external processes asynchronously. Version 19.08. E.
+      Farhi, GPL2. &lt;
+      <meta http-equiv="content-type" content="text/html;
+        charset=windows-1252">
+      <a href="https://github.com/farhi/matlab-process">https://github.com/farhi/matlab-process</a>&gt;</p>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">It can be used to
+      control a process launched from Matlab, or to monitor an other
+      process launched independently. When the process is launched from
+      Matlab, its standard output, and error are collected.</p>
+    <h1 style="box-sizing: border-box; font-size: 2em; margin: 24px 0px
+      16px; font-weight: 600; line-height: 1.25; border-bottom: 1px
+      solid rgb(234, 236, 239); padding-bottom: 0.3em; color: rgb(36,
+      41, 46); font-family: -apple-system, BlinkMacSystemFont,
+      &quot;Segoe UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple
+      Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; letter-spacing: normal; orphans: 2;
+      text-align: start; text-indent: 0px; text-transform: none;
+      white-space: normal; widows: 2; word-spacing: 0px;
+      -webkit-text-stroke-width: 0px; background-color: rgb(255, 255,
+      255); text-decoration-style: initial; text-decoration-color:
+      initial;"><a id="user-content-usage" class="anchor"
+        aria-hidden="true"
+        href="https://github.com/farhi/matlab-process#usage"
+        style="box-sizing: border-box; background-color: transparent;
+        color: rgb(3, 102, 214); text-decoration: none; float: left;
+        line-height: 1; margin-left: -20px; padding-right: 4px;"><svg
+          class="octicon octicon-link" viewBox="0 0 16 16" version="1.1"
+          width="16" height="16" aria-hidden="true"><path
+            fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3
+            4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2
+            3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98
+            0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12
+            13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64
+            1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9
+            13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Usage</h1>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">The syntax to launch a
+      process is simply</p>
+    <div class="highlight highlight-source-matlab" style="box-sizing:
+      border-box; margin-bottom: 16px; color: rgb(36, 41, 46);
+      font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe
+      UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color
+      Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-size: 16px; font-style: normal;
+      font-variant-ligatures: normal; font-variant-caps: normal;
+      font-weight: 400; letter-spacing: normal; orphans: 2; text-align:
+      start; text-indent: 0px; text-transform: none; white-space:
+      normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width:
+      0px; background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <pre style="box-sizing: border-box; font-family: SFMono-Regular, Consolas, &quot;Liberation Mono&quot;, Menlo, monospace; font-size: 13.6px; margin-bottom: 0px; margin-top: 0px; overflow-wrap: normal; background-color: rgb(246, 248, 250); border-radius: 3px; line-height: 1.45; overflow: auto; padding: 16px; word-break: normal;">  pid = process(<span class="pl-s" style="box-sizing: border-box; color: rgb(3, 47, 98);"><span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span>command arguments ...<span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span></span>)</pre>
+    </div>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">The process class
+      replaces the 'system' command. but is started asynchronously.
+      Matlab does not wait for the end of the process to get back to
+      interactive mode. The stdout and stderr are collected
+      periodically. You can send messages via the stdin channel (for
+      interactive processes).</p>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">You can as well monitor
+      an existing external process by connecting to its PID (number)</p>
+    <div class="highlight highlight-source-matlab" style="box-sizing:
+      border-box; margin-bottom: 16px; color: rgb(36, 41, 46);
+      font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe
+      UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color
+      Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-size: 16px; font-style: normal;
+      font-variant-ligatures: normal; font-variant-caps: normal;
+      font-weight: 400; letter-spacing: normal; orphans: 2; text-align:
+      start; text-indent: 0px; text-transform: none; white-space:
+      normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width:
+      0px; background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <pre style="box-sizing: border-box; font-family: SFMono-Regular, Consolas, &quot;Liberation Mono&quot;, Menlo, monospace; font-size: 13.6px; margin-bottom: 0px; margin-top: 0px; overflow-wrap: normal; background-color: rgb(246, 248, 250); border-radius: 3px; line-height: 1.45; overflow: auto; padding: 16px; word-break: normal;">  pid = process(<span class="pl-c1" style="box-sizing: border-box; color: rgb(0, 92, 197);">1234</span>);
+  pid = connect(process, <span class="pl-c1" style="box-sizing: border-box; color: rgb(0, 92, 197);">1234</span>);</pre>
+    </div>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">or by connecting to a
+      running named process:</p>
+    <div class="highlight highlight-source-matlab" style="box-sizing:
+      border-box; margin-bottom: 16px; color: rgb(36, 41, 46);
+      font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe
+      UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color
+      Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-size: 16px; font-style: normal;
+      font-variant-ligatures: normal; font-variant-caps: normal;
+      font-weight: 400; letter-spacing: normal; orphans: 2; text-align:
+      start; text-indent: 0px; text-transform: none; white-space:
+      normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width:
+      0px; background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <pre style="box-sizing: border-box; font-family: SFMono-Regular, Consolas, &quot;Liberation Mono&quot;, Menlo, monospace; font-size: 13.6px; margin-bottom: 0px; margin-top: 0px; overflow-wrap: normal; background-color: rgb(246, 248, 250); border-radius: 3px; line-height: 1.45; overflow: auto; padding: 16px; word-break: normal;">  pid = connect(process, <span class="pl-s" style="box-sizing: border-box; color: rgb(3, 47, 98);"><span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span>ping<span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span></span>);</pre>
+    </div>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">but you will then not be
+      able to capture the stdout and stderr messages, nor send messages
+      via 'write'.<br>
+    </p>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">You can customize the
+      process with e.g. additional arguments such as:</p>
+    <ul style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; padding-left: 2em; color: rgb(36, 41, 46); font-family:
+      -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;,
+      Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;,
+      &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;;
+      font-size: 16px; font-style: normal; font-variant-ligatures:
+      normal; font-variant-caps: normal; font-weight: 400;
+      letter-spacing: normal; orphans: 2; text-align: start;
+      text-indent: 0px; text-transform: none; white-space: normal;
+      widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <li style="box-sizing: border-box;">process(..., 'TimeOut', value)
+        set a TimeOut (to kill process after)</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">process(...,
+        'Period', value) set the refresh rate in seconds (10 s).</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">process(...,
+        'Monitor', 0 or 1) flag to set the process in silent/verbose
+        mode</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">process(...,
+        'TimerFcn', @fcn) execute periodically on refresh</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">process(...,
+        'StopFcn', @fcn) execute when the process is killed (stop/exit)</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">process(...,
+        'EndFcn', @fcn) execute when the process ends by itself</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">process(...,
+        'reader', 'fast') use a fast reader for stdout/stderr, but less
+        robust (may block, see below)</li>
+    </ul>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">The TimerFcn, StopFcn
+      and EndFcn can be given as: <br>
+    </p>
+    <ul>
+      <li>simple strings, such as<span>&nbsp;</span><code
+          style="box-sizing: border-box; font-family: SFMono-Regular,
+          Consolas, &quot;Liberation Mono&quot;, Menlo, monospace;
+          font-size: 13.6px; background-color: rgba(27, 31, 35, 0.05);
+          border-radius: 3px; margin: 0px; padding: 0.2em 0.4em;">'disp(''OK'')'</code></li>
+      <li>a function handle with none to 2 arguments. The Callback will
+        then pass as 1st argument the process object, and as 2nd the
+        event in 'kill','timeout','end', or 'refresh'. Example<span>&nbsp;</span><code
+          style="box-sizing: border-box; font-family: SFMono-Regular,
+          Consolas, &quot;Liberation Mono&quot;, Menlo, monospace;
+          font-size: 13.6px; background-color: rgba(27, 31, 35, 0.05);
+          border-radius: 3px; margin: 0px; padding: 0.2em 0.4em;">@(p,e)disp([
+          'process ' p.Name ': event ' e ])</code></li>
+      <li>the name of a function which takes none to 2 arguments. Same
+        as above.</li>
+    </ul>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">When a callback has a
+      non-zero return value, it stops the process.</p>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">For instance:</p>
+    <ul style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; padding-left: 2em; color: rgb(36, 41, 46); font-family:
+      -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;,
+      Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;,
+      &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;;
+      font-size: 16px; font-style: normal; font-variant-ligatures:
+      normal; font-variant-caps: normal; font-weight: 400;
+      letter-spacing: normal; orphans: 2; text-align: start;
+      text-indent: 0px; text-transform: none; white-space: normal;
+      widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <li style="box-sizing: border-box;">to stop a process when a file
+        appears, use:<span>&nbsp;</span><code style="box-sizing:
+          border-box; font-family: SFMono-Regular, Consolas,
+          &quot;Liberation Mono&quot;, Menlo, monospace; font-size:
+          13.6px; background-color: rgba(27, 31, 35, 0.05);
+          border-radius: 3px; margin: 0px; padding: 0.2em 0.4em;">process(...,
+          'TimerFcn', @(p,e)~isempty(dir('/path/file')) )</code></li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">to stop a
+        process when a file disappears, use:<span>&nbsp;</span><code
+          style="box-sizing: border-box; font-family: SFMono-Regular,
+          Consolas, &quot;Liberation Mono&quot;, Menlo, monospace;
+          font-size: 13.6px; background-color: rgba(27, 31, 35, 0.05);
+          border-radius: 3px; margin: 0px; padding: 0.2em 0.4em;">process(...,
+          'TimerFcn', @(p,e)isempty(dir('/path/file')) )</code></li>
+    </ul>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">You can also monitor the
+      process termination with:</p>
+    <div class="highlight highlight-source-matlab" style="box-sizing:
+      border-box; margin-bottom: 16px; color: rgb(36, 41, 46);
+      font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe
+      UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color
+      Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-size: 16px; font-style: normal;
+      font-variant-ligatures: normal; font-variant-caps: normal;
+      font-weight: 400; letter-spacing: normal; orphans: 2; text-align:
+      start; text-indent: 0px; text-transform: none; white-space:
+      normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width:
+      0px; background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <pre style="box-sizing: border-box; font-family: SFMono-Regular, Consolas, &quot;Liberation Mono&quot;, Menlo, monospace; font-size: 13.6px; margin-bottom: 0px; margin-top: 0px; overflow-wrap: normal; background-color: rgb(246, 248, 250); border-radius: 3px; line-height: 1.45; overflow: auto; padding: 16px; word-break: normal;">addlistener(pid, <span class="pl-s" style="box-sizing: border-box; color: rgb(3, 47, 98);"><span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span>processEnded<span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span></span>, @(src,evt)disp(<span class="pl-s" style="box-sizing: border-box; color: rgb(3, 47, 98);"><span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span>process just end<span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span></span>))</pre>
+    </div>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">methods to monitor
+      Processes</p>
+    <ul style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; padding-left: 2em; color: rgb(36, 41, 46); font-family:
+      -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;,
+      Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;,
+      &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;;
+      font-size: 16px; font-style: normal; font-variant-ligatures:
+      normal; font-variant-caps: normal; font-weight: 400;
+      letter-spacing: normal; orphans: 2; text-align: start;
+      text-indent: 0px; text-transform: none; white-space: normal;
+      widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <li style="box-sizing: border-box;">disp(pid) display full process
+        information.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">pid
+        display short process information. Same as display(pid).</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">read(pid)
+        get the stdout stream from the process (normal output).</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">error(pid)
+        get the stderr stream from the process (errors).</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">write(pid,
+        'string') sends the given string to the process.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">isreal(pid)
+        check if a process is valid/running.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">refresh(pid)
+        force the pid to be refreshed, i.e check if it is running and
+        get its stdout/stderr.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">silent(pid)
+        set the process to silent mode (do not print stdout/stderr).</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">verbose(pid)
+        set the process to verbose mode (print stdout/stderr).</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">etime(pid)
+        return the process duration since start.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">findall(pid)
+        get all running process objects.</li>
+    </ul>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">methods to control
+      execution</p>
+    <ul style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; padding-left: 2em; color: rgb(36, 41, 46); font-family:
+      -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;,
+      Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;,
+      &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;;
+      font-size: 16px; font-style: normal; font-variant-ligatures:
+      normal; font-variant-caps: normal; font-weight: 400;
+      letter-spacing: normal; orphans: 2; text-align: start;
+      text-indent: 0px; text-transform: none; white-space: normal;
+      widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <li style="box-sizing: border-box;">waitfor(pid) wait for the
+        process to end normally or on TimeOut.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">exit(pid)
+        kill the process (stop it). Same as stop(pid)</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">delete(pid)
+        kill the process and delete it from memory.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">killall(pid)
+        kill all running process objects.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">atexit(pid,
+        fcn) set a callback to execute at end/stop/kill.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">period(pid,
+        dt) set the monitoring period (default is 10s)</li>
+    </ul>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">Example:</p>
+    <div class="highlight highlight-source-matlab" style="box-sizing:
+      border-box; margin-bottom: 16px; color: rgb(36, 41, 46);
+      font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe
+      UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color
+      Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-size: 16px; font-style: normal;
+      font-variant-ligatures: normal; font-variant-caps: normal;
+      font-weight: 400; letter-spacing: normal; orphans: 2; text-align:
+      start; text-indent: 0px; text-transform: none; white-space:
+      normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width:
+      0px; background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <pre style="box-sizing: border-box; font-family: SFMono-Regular, Consolas, &quot;Liberation Mono&quot;, Menlo, monospace; font-size: 13.6px; margin-bottom: 0px; margin-top: 0px; overflow-wrap: normal; background-color: rgb(246, 248, 250); border-radius: 3px; line-height: 1.45; overflow: auto; padding: 16px; word-break: normal;">  pid=process(<span class="pl-s" style="box-sizing: border-box; color: rgb(3, 47, 98);"><span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span>ping 127.0.0.1<span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span></span>); silent(pid);
+  pause(<span class="pl-c1" style="box-sizing: border-box; color: rgb(0, 92, 197);">5</span>);
+  exit(pid);</pre>
+    </div>
+    <pre style="box-sizing: border-box; font-family: SFMono-Regular, Consolas, &quot;Liberation Mono&quot;, Menlo, monospace; font-size: 13.6px; margin-bottom: 16px; margin-top: 0px; overflow-wrap: normal; background-color: rgb(246, 248, 250); border-radius: 3px; line-height: 1.45; overflow: auto; padding: 16px; color: rgb(36, 41, 46); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial;"><code style="box-sizing: border-box; font-family: SFMono-Regular, Consolas, &quot;Liberation Mono&quot;, Menlo, monospace; font-size: 13.6px; background: transparent; border-radius: 3px; margin: 0px; padding: 0px; border: 0px; white-space: pre; word-break: normal; display: inline; line-height: inherit; overflow: visible; overflow-wrap: normal;">Copyright: Licensed under the GPL2. 
+E. Farhi, &lt;emmanuel.farhi@synchrotron-soleil.fr&gt;, http://ifit.mccode.org
+</code></pre>
+    <h1 style="box-sizing: border-box; font-size: 2em; margin: 24px 0px
+      16px; font-weight: 600; line-height: 1.25; border-bottom: 1px
+      solid rgb(234, 236, 239); padding-bottom: 0.3em; color: rgb(36,
+      41, 46); font-family: -apple-system, BlinkMacSystemFont,
+      &quot;Segoe UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple
+      Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; letter-spacing: normal; orphans: 2;
+      text-align: start; text-indent: 0px; text-transform: none;
+      white-space: normal; widows: 2; word-spacing: 0px;
+      -webkit-text-stroke-width: 0px; background-color: rgb(255, 255,
+      255); text-decoration-style: initial; text-decoration-color:
+      initial;"><a
+        id="user-content-specifying-the-process-reader--interactive-processes"
+        class="anchor" aria-hidden="true"
+href="https://github.com/farhi/matlab-process#specifying-the-process-reader--interactive-processes"
+        style="box-sizing: border-box; background-color: transparent;
+        color: rgb(3, 102, 214); text-decoration: none; float: left;
+        line-height: 1; margin-left: -20px; padding-right: 4px;"><svg
+          class="octicon octicon-link" viewBox="0 0 16 16" version="1.1"
+          width="16" height="16" aria-hidden="true"><path
+            fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3
+            4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2
+            3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98
+            0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12
+            13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64
+            1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9
+            13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Specifying
+      the process reader / Interactive processes</h1>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">The default
+      stdout/stderr reader is rather slow, but very robust. It is well
+      adapted to most cases, including interactive processes (allowing
+      to use the<span>&nbsp;</span><code style="box-sizing: border-box;
+        font-family: SFMono-Regular, Consolas, &quot;Liberation
+        Mono&quot;, Menlo, monospace; font-size: 13.6px;
+        background-color: rgba(27, 31, 35, 0.05); border-radius: 3px;
+        margin: 0px; padding: 0.2em 0.4em;">write</code><span>&nbsp;</span>method).
+      However, it is<span>&nbsp;</span><strong style="box-sizing:
+        border-box; font-weight: 600;">slow</strong>.</p>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">When the external
+      process is<span>&nbsp;</span><strong style="box-sizing:
+        border-box; font-weight: 600;">not</strong><span>&nbsp;</span>interactive,
+      and produces large amount of output and error messages, you may
+      try the fast reader when launching the process, with:</p>
+    <div class="highlight highlight-source-matlab" style="box-sizing:
+      border-box; margin-bottom: 16px; color: rgb(36, 41, 46);
+      font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe
+      UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color
+      Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-size: 16px; font-style: normal;
+      font-variant-ligatures: normal; font-variant-caps: normal;
+      font-weight: 400; letter-spacing: normal; orphans: 2; text-align:
+      start; text-indent: 0px; text-transform: none; white-space:
+      normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width:
+      0px; background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <pre style="box-sizing: border-box; font-family: SFMono-Regular, Consolas, &quot;Liberation Mono&quot;, Menlo, monospace; font-size: 13.6px; margin-bottom: 0px; margin-top: 0px; overflow-wrap: normal; background-color: rgb(246, 248, 250); border-radius: 3px; line-height: 1.45; overflow: auto; padding: 16px; word-break: normal;">  pid = process(<span class="pl-s" style="box-sizing: border-box; color: rgb(3, 47, 98);"><span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span>command arguments ...<span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span></span>,<span class="pl-s" style="box-sizing: border-box; color: rgb(3, 47, 98);"><span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span>reader<span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span></span>,<span class="pl-s" style="box-sizing: border-box; color: rgb(3, 47, 98);"><span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span>fast<span class="pl-pds" style="box-sizing: border-box; color: rgb(3, 47, 98);">'</span></span>)</pre>
+    </div>
+    <p style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px;
+      font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; font-weight: 400; letter-spacing:
+      normal; orphans: 2; text-align: start; text-indent: 0px;
+      text-transform: none; white-space: normal; widows: 2;
+      word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">This fast reader is less
+      robust, and may potentially block Matlab when the output messages
+      are not properly terminated with end-of-lines. We recommend to
+      test the applicability of this reader, and check that the process
+      to monitor is compatible.</p>
+    <h1 style="box-sizing: border-box; font-size: 2em; margin: 24px 0px
+      16px; font-weight: 600; line-height: 1.25; border-bottom: 1px
+      solid rgb(234, 236, 239); padding-bottom: 0.3em; color: rgb(36,
+      41, 46); font-family: -apple-system, BlinkMacSystemFont,
+      &quot;Segoe UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple
+      Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-style: normal; font-variant-ligatures: normal;
+      font-variant-caps: normal; letter-spacing: normal; orphans: 2;
+      text-align: start; text-indent: 0px; text-transform: none;
+      white-space: normal; widows: 2; word-spacing: 0px;
+      -webkit-text-stroke-width: 0px; background-color: rgb(255, 255,
+      255); text-decoration-style: initial; text-decoration-color:
+      initial;"><a id="user-content-class-details" class="anchor"
+        aria-hidden="true"
+        href="https://github.com/farhi/matlab-process#class-details"
+        style="box-sizing: border-box; background-color: transparent;
+        color: rgb(3, 102, 214); text-decoration: none; float: left;
+        line-height: 1; margin-left: -20px; padding-right: 4px;"><svg
+          class="octicon octicon-link" viewBox="0 0 16 16" version="1.1"
+          width="16" height="16" aria-hidden="true"><path
+            fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3
+            4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2
+            3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98
+            0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12
+            13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64
+            1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9
+            13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Class
+      Details</h1>
+    <h2 style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      24px; font-weight: 600; font-size: 1.5em; line-height: 1.25;
+      border-bottom: 1px solid rgb(234, 236, 239); padding-bottom:
+      0.3em; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-style: normal;
+      font-variant-ligatures: normal; font-variant-caps: normal;
+      letter-spacing: normal; orphans: 2; text-align: start;
+      text-indent: 0px; text-transform: none; white-space: normal;
+      widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;"><a
+        id="user-content-property-summary" class="anchor"
+        aria-hidden="true"
+        href="https://github.com/farhi/matlab-process#property-summary"
+        style="box-sizing: border-box; background-color: transparent;
+        color: rgb(3, 102, 214); text-decoration: none; float: left;
+        line-height: 1; margin-left: -20px; padding-right: 4px;"><svg
+          class="octicon octicon-link" viewBox="0 0 16 16" version="1.1"
+          width="16" height="16" aria-hidden="true"><path
+            fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3
+            4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2
+            3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98
+            0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12
+            13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64
+            1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9
+            13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Property
+      Summary</h2>
+    <ul style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      0px; padding-left: 2em; color: rgb(36, 41, 46); font-family:
+      -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;,
+      Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;,
+      &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;;
+      font-size: 16px; font-style: normal; font-variant-ligatures:
+      normal; font-variant-caps: normal; font-weight: 400;
+      letter-spacing: normal; orphans: 2; text-align: start;
+      text-indent: 0px; text-transform: none; white-space: normal;
+      widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <li style="box-sizing: border-box;">Duration How long it took</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">EndFcn
+        Executed when process ends normally.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">Name The
+        name of the process</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">StopFcn
+        Executed when process is stopped/killed.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">TimeOut
+        Time [s] after which process is killed if not done.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">TimerFcn
+        Executed every time the refresh function is used.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">UserData
+        User area.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">command
+        The command associated to the process.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">creationDate
+        Creation date (start).</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">exitValue
+        Exit code, only valid at end of process.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">info
+        additional information from the system</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">stderr
+        Stores the stderr from the process.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">stdout
+        Stores the stdout (yes!) from the process.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">terminationDate
+        End date.</li>
+    </ul>
+    <h2 style="box-sizing: border-box; margin-bottom: 16px; margin-top:
+      24px; font-weight: 600; font-size: 1.5em; line-height: 1.25;
+      border-bottom: 1px solid rgb(234, 236, 239); padding-bottom:
+      0.3em; color: rgb(36, 41, 46); font-family: -apple-system,
+      BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial,
+      sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI
+      Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-style: normal;
+      font-variant-ligatures: normal; font-variant-caps: normal;
+      letter-spacing: normal; orphans: 2; text-align: start;
+      text-indent: 0px; text-transform: none; white-space: normal;
+      widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;"><a
+        id="user-content-method-summary" class="anchor"
+        aria-hidden="true"
+        href="https://github.com/farhi/matlab-process#method-summary"
+        style="box-sizing: border-box; background-color: transparent;
+        color: rgb(3, 102, 214); text-decoration: none; float: left;
+        line-height: 1; margin-left: -20px; padding-right: 4px;"><svg
+          class="octicon octicon-link" viewBox="0 0 16 16" version="1.1"
+          width="16" height="16" aria-hidden="true"><path
+            fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3
+            4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2
+            3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98
+            0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12
+            13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64
+            1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9
+            13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Method
+      Summary</h2>
+    <ul style="box-sizing: border-box; margin-bottom: 0px !important;
+      margin-top: 0px; padding-left: 2em; color: rgb(36, 41, 46);
+      font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe
+      UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color
+      Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI
+      Symbol&quot;; font-size: 16px; font-style: normal;
+      font-variant-ligatures: normal; font-variant-caps: normal;
+      font-weight: 400; letter-spacing: normal; orphans: 2; text-align:
+      start; text-indent: 0px; text-transform: none; white-space:
+      normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width:
+      0px; background-color: rgb(255, 255, 255); text-decoration-style:
+      initial; text-decoration-color: initial;">
+      <li style="box-sizing: border-box;">addlistener Add listener for
+        event.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">atexit
+        sets the Exit callback (executed at stop/kill)</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">char
+        convert a process object into char string</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">connect
+        connect to an existing process.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">copyobj
+        makes a deep copy of initial object</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">delete
+        completely remove the process from memory.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">disp
+        display Process object (details)</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">display
+        display Process object (from command line)</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">eq== (EQ)
+        Test handle equality.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">error
+        return the standard error stream (stderr)</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">etime
+        return the process duration since start.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">exit
+        end/kill a running process and/or return its exit value.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">findall
+        find all process objects</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">findobj
+        Find objects matching specified conditions.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">findprop
+        Find property of MATLAB handle object.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">ge&gt;=
+        (GE) Greater than or equal relation for handles.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">gt&gt;
+        (GT) Greater than relation for handles.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">isreal
+        return 1 when the process is running, 0 otherwise. Sealed</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">isvalid
+        Test handle validity.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">kill stop
+        a running process</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">killall
+        find all process objects</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">le&lt;=
+        (LE) Less than or equal relation for handles.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">lt&lt;
+        (LT) Less than relation for handles.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">ne~= (NE)
+        Not equal relation for handles.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">notify
+        Notify listeners of event.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">period
+        set/get the monitoring period.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">read
+        return the standard output stream (stdout)</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">refresh
+        poke a process and update its stdout/stderr.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">silent set
+        the process to silent mode.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">start make
+        sure the process monitoring is running</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">stop stop
+        a running process</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">verbose
+        set the process to verbose mode, which displays its stdout.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">waitfor
+        wait for the process to end normally or on TimeOut.</li>
+      <li style="box-sizing: border-box; margin-top: 0.25em;">write send
+        a string to the standard input stream (stdin)</li>
+    </ul>
+  </body>
+</html>
